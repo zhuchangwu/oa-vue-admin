@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 15000 // request timeout
 })
 
 // request interceptor
@@ -35,7 +35,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -43,18 +43,22 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response.data
+    let res = response.data
+    // 针对50008 和 50012类型的错误，后端会返回字符串，故需要进行判断转换成对象
+    if(res.code===undefined){
+      res = JSON.parse(res)
+    }
     // todo 响应拦截器：返回的请求率先经过这里处理
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+    // 只要不等于200，if成了，进一步处理错误
+    if (res.code !== 200) {
+      // 将响应转换成对象
+      // 50008： 密码错误 50012： 没有权限
+      if (res.code === 50008 || res.code === 50012) {
+        Message.warning(res.msg)
+        return
+      }
+      // 50014 身份过期
+      if (res.code === 50014) {
         // to re-login
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
           confirmButtonText: 'Re-Login',
@@ -68,6 +72,7 @@ service.interceptors.response.use(
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
+      // 状态码==200，通过这本次拦截
       return res
     }
   },

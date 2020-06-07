@@ -40,8 +40,8 @@ const actions = {
         // 解析请求，
         const { data } = response
         // 将后端给的token存储起来
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        commit('SET_TOKEN', response.token)
+        setToken(response.token)
         resolve()
       }).catch(error => {
         console.log(error)
@@ -53,6 +53,8 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
+
+      console.log("in store get user info")
       getInfo(state.token).then(response => {
         const { data } = response
 

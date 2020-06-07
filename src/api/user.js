@@ -13,7 +13,10 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: BaseUrl + '/user/info',
+    headers:{
+      "Authrication":"Bearer "+token
+    },
+    url: BaseUrl + '/user/getInfo',
     method: 'get',
     params: { token }
   })

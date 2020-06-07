@@ -75,7 +75,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -138,6 +138,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               // 成功进入到首页中
+              console.log("login index vue")
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
