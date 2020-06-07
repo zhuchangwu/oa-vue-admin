@@ -34,9 +34,8 @@ import nestedRouter from './modules/nested'
  */
 
 /**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
+ * todo 不需要角色
+ * @type {any}
  */
 export const constantRoutes = [
   {
@@ -70,6 +69,7 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
+  // todo 个人信息页
   {
     path: '/',
     component: Layout,
@@ -79,10 +79,36 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '个人信息', icon: 'dashboard', affix: true }
       }
     ]
   },
+  // todo 流程管理
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/list',
+    name: 'Example',
+    meta: {
+      title: '报销流程',
+      icon: 'example'
+    },
+    children: [
+      {
+        path: 'create',
+        component: () => import('@/views/example/create'),
+        name: 'CreateArticle',
+        meta: { title: '我发起的', icon: 'edit' }
+      },
+      {
+        path: 'create2',
+        component: () => import('@/views/example/create'),
+        name: 'CreateArticle',
+        meta: { title: '由我审批', icon: 'edit' }
+      }
+    ]
+  },
+
   {
     path: '/documentation',
     component: Layout,
@@ -129,6 +155,32 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+
+  // todo 公告管理
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/list',
+    name: 'Example',
+    meta: {
+      title: '公告管理',
+      icon: 'example',
+      roles: ['ROLE_MANAGER', 'ROLE_BOSS']
+    }
+  },
+  // todo 报销流程模版管理
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/list',
+    name: 'Example',
+    meta: {
+      title: '报销流程模版管理',
+      icon: 'example',
+      roles: ['ROLE_BOSS']
+    }
+  },
+
   {
     path: '/permission',
     component: Layout,

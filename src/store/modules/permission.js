@@ -58,6 +58,21 @@ const actions = {
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
+  },
+
+  oaGenerateRoutes({ commit }, roles) {
+    return new Promise(resolve => {
+      let accessedRoutes
+      // 如果是普通员工，只能看到不需要权限的路由
+      if (roles.includes('ROLE_STAFF')) {
+        accessedRoutes = constantRoutes || []
+      } else  {
+        // 如果不是普通员工，根据mate中的信息，计算他到底能看到哪些路由。
+        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      }
+      commit('SET_ROUTES', accessedRoutes)
+      resolve(accessedRoutes)
+    })
   }
 }
 

@@ -59,11 +59,11 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      /*if (!validUsername(value)) {
         callback(new Error('Please enter the correct user name'))
       } else {
         callback()
-      }
+      }*/
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
@@ -74,11 +74,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        username: 'staff01',
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+       /* username: [{ required: true, trigger: 'blur', validator: validateUsername }],*/
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
@@ -131,25 +131,23 @@ export default {
     },
     handleLogin() {
       // 校验登陆表单
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
+     /// this.$refs.loginForm.validate(valid => {
+      //  if (valid) {
           this.loading = true
           // 调用store中的任务
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               // 成功进入到首页中
-              console.log("login index vue")
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
             .catch(() => {
               this.loading = false
             })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+       //} else {
+       //  return false
+       //}
+      //})
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
