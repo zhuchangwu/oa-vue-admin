@@ -9,6 +9,9 @@
 </template>
 
 <script>
+  import { MessageBox } from 'element-ui'
+  import store from '@/store'
+
   export default {
     name: 'AppMain',
     computed: {
@@ -21,6 +24,8 @@
     },
     data() {
       return {
+        logout: '',// 是否被挤下去的标示
+        timeId: '',// 定时器ID
         socket: null
       }
     },
@@ -28,6 +33,7 @@
       console.log('重新连接：')
       this.initSocket()
       console.log('重新连接：')
+
     },
     methods: {
       initSocket() {
@@ -41,72 +47,94 @@
           } else {
             // 实例化 , 第二个ws是我们可以自定义的, 根据后端的路由来
             console.log('准备建立连接～')
-            this.socket = new WebSocket('ws://192.168.43.52:8084/ws')
+            this.socket = new WebSocket('ws://127.0.0.1:8084/ws')
             // 初始化WebSocket原生的方法
-            this.socket.onopen = this.myopen()
-            this.socket.onmessage = this.mymessage()
+            this.socket.onopen = () => {
+              console.log('连接建立成功了～')
+              var msg = {
+                'action': 0,
+                'username': this.$store.getters.username,
+                'content': '',
+                'acceptUser': null
+              }
+              // 发送请求建立连接的请求
+              if (this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify(msg))
+              } else {
+                // 重新连接
+                this.initSocket()
+              }
+
+              // 定时发送心跳
+              var heartMsg = {
+                'action': 1,
+                'username': this.$store.getters.username,
+                'content': 'heart msg',
+                'acceptUser': null
+              }
+              var that = this
+              setInterval(function() {
+                console.log("定时发送心跳")
+                that.socket.send(JSON.stringify(heartMsg))
+                console.log("定时发送心跳结束")
+              }, 5000)
+            }
+
+            // 服务端将消息返回～
+            this.socket.onmessage = (msg) => {
+              console.log('服务端发送了消息 ', msg)
+              // 服务端通知本账号在其他地方登陆了
+              if (msg.data === 'logout') {
+                // 清除定时器
+                window.clearInterval(this.timeId)
+                // 清空本地缓存token
+                store.dispatch('user/resetToken')
+                // 标记当前是被动退出，不再主动重新建立连接
+                this.logout = msg.data
+                // 删除本地缓存，跳转到登陆页面
+                MessageBox.confirm('您的账号在其他设备登陆，请重新登陆～', 'Confirm logout', {
+                  confirmButtonText: 'Re-Login',
+                  showClose: false,
+                  showCancelButton: false,
+                  type: 'warning'
+                }).then(() => {
+                  store.dispatch('user/resetToken').then(() => {
+                    location.reload()
+                  })
+                })
+              }
+              // 服务端返回的心跳
+              if (msg.data === 'ok') {
+                console.log('服务端返回心跳：', msg.data)
+              }
+            }
+            // 出错时回调
             this.socket.onerror = (err) => {
               console.log('出错了～ ', err)
+              window.clearInterval(this.timeId)
             }
-
             // 关闭时回调
             this.socket.onclose = () => {
-              console.log('连接在服务端被remove, 10秒钟后重新连接')
-              var that = this
-              setTimeout(function() {
-                that.initSocket()
-              }, 10000)
-              // 尝试重新连接
+              window.clearInterval(this.timeId)
+              console.log('连接在服务端被remove')
+              // 只要不是服务端说有其他用户登陆了，其他任何情况都重新连接
+              if (this.logout !== 'logout') {
+                console.log('10秒钟后重新连接')
+                var that = this
+                setTimeout(function() {
+                  // 被挤下去的才会重新连接
+                  if (that.logout !== 'logout') {
+                    that.initSocket()
+                  }
+                }, 10000)
+              }
             }
-
           }
         } else {
           alert('当前设备不支持WebSocket')
         }
-      },
-      // 发送聊天消息
-      chat(msg) {
-        // 如果的当前的WebSocket是连接的状态,直接发送 否则从新连接
-        if (this.socket.readyState === WebSocket.OPEN) {
-          this.socket.send(msg)
-        } else {
-          // 重新连接
-          this.initSocket()
-          // 延迟一会,从新发送
-          setTimeout(1000)
-          this.socket.send(msg)
-        }
-      },
-      // 当连接建立完成后对调
-      myopen() {
-        console.log('连接建立成功了～')
-        // 拉取连接建立之前的未签收的消息记录
-        // 发送心跳包
-      },
-      mymessage(msg) {
-        // 因为服务端可以主动的推送消息,我们提前定义和后端统一msg的类型, 如,拉取好友信息的消息,或 聊天的消息
-        if (msg === '聊天内容') {
-          // 发送请求签收消息,改变请求的状态
-          // 将消息缓存到本地
-          // 将msg 转换成消息对象, 植入html进行渲染
-        } else if (msg === '拉取好友列表') {
-          // 发送请求更新好友列表
-        }
-      },
-      myerror(err) {
-        console.log('连接出现异常... ', err)
-      },
-      keepalive() {
-        // 构建对象
-        var dataContent = {}
-        // 发送心跳
-        this.chat(JSON.stringify(dataContent))
-        // 定时执行函数, 其他操作
-        // 拉取未读消息
-        // 拉取好友信息
       }
     }
-
   }
 </script>
 
