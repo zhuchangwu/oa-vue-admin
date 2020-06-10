@@ -121,19 +121,7 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'Guide', icon: 'guide', noCache: true }
-      }
-    ]
-  },
+
   {
     path: '/profile',
     component: Layout,
@@ -168,18 +156,25 @@ export const asyncRoutes = [
       roles: ['ROLE_MANAGER', 'ROLE_BOSS']
     }
   },
-  // todo 报销流程模版管理
   {
-    path: '/example',
+    path: '/guide',
     component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
-    meta: {
-      title: '报销流程模版管理',
-      icon: 'example',
-      roles: ['ROLE_BOSS']
-    }
+    redirect: '/guide/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/guide/index'),
+        name: 'Guide',
+        meta: {
+          title: '报销流程模版管理',
+          icon: 'example',
+          roles: ['ROLE_BOSS']
+        }
+      }
+    ]
   },
+
+
 
   {
     path: '/permission',

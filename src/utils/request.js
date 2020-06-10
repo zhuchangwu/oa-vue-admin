@@ -44,6 +44,10 @@ service.interceptors.response.use(
    */
   response => {
     let res = response.data
+
+
+    console.log(res)
+
     // 针对50008 和 50012类型的错误，后端会返回字符串，故需要进行判断转换成对象
     if(res.code===undefined){
       res = JSON.parse(res)
