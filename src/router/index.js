@@ -29,7 +29,7 @@ import nestedRouter from './modules/nested'
     noCache: true                if set true, the page will no be cached(default is false)
     affix: true                  if set true, the tag will affix in the tags-view
     breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+    activeMenu: '/oa-myflow/list'  if set path, the sidebar will highlight the path you set
   }
  */
 
@@ -59,9 +59,14 @@ export const constantRoutes = [
     component: () => import('@/views/login/auth-redirect'),
     hidden: true
   },
-  {
+ /* {
     path: '/404',
     component: () => import('@/views/error-page/404'),
+    hidden: true
+  },*/
+   {
+    path: '/404',
+    component: () => import('@/views/dashboard/index'),
     hidden: true
   },
   {
@@ -85,9 +90,9 @@ export const constantRoutes = [
   },
   // todo 流程管理
   {
-    path: '/example',
+    path: '/oa-myflow',
     component: Layout,
-    redirect: '/example/list',
+    redirect: '/oa-myflow/list',
     name: 'Example',
     meta: {
       title: '报销流程',
@@ -96,20 +101,20 @@ export const constantRoutes = [
     children: [
       {
         path: 'create',
-        component: () => import('@/views/example/create'),
-        name: 'CreateArticle',
+        component: () => import('@/views/oa-myflow/create'),
+        name: 'CreateFlow',
         meta: { title: '我发起的', icon: 'edit' }
       },
       {
-        path: 'create2',
-        component: () => import('@/views/example/create'),
-        name: 'CreateArticle',
+        path: 'edit',
+        component: () => import('@/views/oa-myflow/edit'),
+        name: 'EditFlow',
         meta: { title: '由我审批', icon: 'edit' }
       }
     ]
   },
 
-  {
+/*  {
     path: '/documentation',
     component: Layout,
     children: [
@@ -120,7 +125,7 @@ export const constantRoutes = [
         meta: { title: 'Documentation', icon: 'documentation', affix: true }
       }
     ]
-  },
+  },*/
 
   {
     path: '/profile',
@@ -144,17 +149,23 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
 
-  // todo 公告管理
+  // 公告管理
   {
-    path: '/example',
+    path: '/oa-notice',
     component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
-    meta: {
-      title: '公告管理',
-      icon: 'example',
-      roles: ['ROLE_MANAGER', 'ROLE_BOSS']
-    }
+    redirect: '/oa-notice/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/oa-notice/index'),
+        name: 'Guide',
+        meta: {
+          title: '公告管理',
+          icon: 'example',
+          roles: ['ROLE_BOSS','ROLE_MANAGER']
+        }
+      }
+    ]
   },
   {
     path: '/guide',
@@ -175,7 +186,7 @@ export const asyncRoutes = [
   },
 
 
-
+/*
   {
     path: '/permission',
     component: Layout,
@@ -229,18 +240,18 @@ export const asyncRoutes = [
         meta: { title: 'Icons', icon: 'icon', noCache: true }
       }
     ]
-  },
+  },*/
 
   /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
-  tableRouter,
+  //componentsRouter,
+ // chartsRouter,
+ // nestedRouter,
+ // tableRouter,
 
-  {
-    path: '/example',
+/*  {
+    path: '/oa-myflow',
     component: Layout,
-    redirect: '/example/list',
+    redirect: '/oa-myflow/list',
     name: 'Example',
     meta: {
       title: 'Example',
@@ -249,26 +260,27 @@ export const asyncRoutes = [
     children: [
       {
         path: 'create',
-        component: () => import('@/views/example/create'),
+        component: () => import('@/views/oa-myflow/create'),
         name: 'CreateArticle',
         meta: { title: 'Create Article', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
-        component: () => import('@/views/example/edit'),
+        component: () => import('@/views/oa-myflow/edit'),
         name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
+        meta: { title: 'Edit Article', noCache: true, activeMenu: '/oa-myflow/list' },
         hidden: true
       },
       {
         path: 'list',
-        component: () => import('@/views/example/list'),
+        component: () => import('@/views/oa-myflow/list'),
         name: 'ArticleList',
         meta: { title: 'Article List', icon: 'list' }
       }
     ]
-  },
+  },*/
 
+/*
   {
     path: '/tab',
     component: Layout,
@@ -319,8 +331,9 @@ export const asyncRoutes = [
       }
     ]
   },
+*/
 
-  {
+  /*{
     path: '/excel',
     component: Layout,
     redirect: '/excel/export-excel',
@@ -429,7 +442,7 @@ export const asyncRoutes = [
       }
     ]
   },
-
+*/
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

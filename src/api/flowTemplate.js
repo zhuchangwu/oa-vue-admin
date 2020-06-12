@@ -3,6 +3,15 @@ import request from '@/utils/request'
 // Golang后端地址
 const BaseUrl = 'http://localhost:8081'
 
+
+// 获取所有模版的信息
+export function getAllFlowTemplateInfo() {
+  return request({
+    url: BaseUrl + '/flowTemplate/getAllFlowTemplateInfo',
+    method: 'get',
+  })
+}
+
 // 更新或者新建
 export function createOrUpdateFlowTemplate(data) {
   return request({

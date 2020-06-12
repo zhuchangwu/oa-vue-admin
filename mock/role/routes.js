@@ -314,31 +314,31 @@ export const asyncRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/oa-myflow',
     component: 'layout/Layout',
-    redirect: '/example/list',
+    redirect: '/oa-myflow/list',
     name: 'Example',
     meta: {
       title: 'Example',
-      icon: 'example'
+      icon: 'oa-myflow'
     },
     children: [
       {
         path: 'create',
-        component: 'views/example/create',
+        component: 'views/oa-myflow/create',
         name: 'CreateArticle',
         meta: { title: 'Create Article', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
-        component: 'views/example/edit',
+        component: 'views/oa-myflow/edit',
         name: 'EditArticle',
         meta: { title: 'Edit Article', noCache: true },
         hidden: true
       },
       {
         path: 'list',
-        component: 'views/example/list',
+        component: 'views/oa-myflow/list',
         name: 'ArticleList',
         meta: { title: 'Article List', icon: 'list' }
       }
